@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pro-Pharmacy Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+:root{
+--purple:#a855f7;
+--pink:#ec4899;
+--cyan:#06b6d4;
+--orange:#fb923c;
+--lime:#84cc16;
+--bg1:#0f172a;
+--bg2:#1e293b;
+--card:rgba(255,255,255,0.08);
+--border:rgba(255,255,255,0.2);
+--text:#f8fafc;
+}
+
+/* BACKGROUND */
+
+body{
+margin:0;
+font-family:'Inter',sans-serif;
+background:linear-gradient(120deg,#0f172a,#1e293b,#020617);
+color:var(--text);
+min-height:100vh;
+}
+
+/* HEADER */
+
+header{
+background:linear-gradient(90deg,var(--purple),var(--pink),var(--cyan));
+padding:18px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 10px 40px rgba(0,0,0,0.5);
+}
+
+header h2{
+margin:0;
+font-size:26px;
+font-weight:700;
+}
+
+/* CONTAINER */
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:30px;
+}
+
+/* GLASS CARD */
+
+.card{
+background:var(--card);
+border:1px solid var(--border);
+backdrop-filter:blur(12px);
+border-radius:18px;
+padding:25px;
+margin-bottom:25px;
+box-shadow:0 20px 60px rgba(0,0,0,0.4);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-6px);
+}
+
+/* MEDICINE CARDS */
+
+.medicine{
+width:240px;
+display:inline-block;
+margin:15px;
+padding:18px;
+border-radius:18px;
+background:linear-gradient(145deg,#1e293b,#0f172a);
+box-shadow:0 15px 40px rgba(0,0,0,0.5);
+transition:.3s;
+position:relative;
+}
+
+.medicine:hover{
+transform:scale(1.05);
+}
+
+.medicine::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:5px;
+background:linear-gradient(90deg,var(--purple),var(--pink),var(--cyan),var(--orange));
+border-radius:20px 20px 0 0;
+}
+
+.medicine img{
+width:200px;
+height:120px;
+border-radius:10px;
+margin-bottom:10px;
+object-fit:cover;
+}
+
+/* NEON BUTTON */
+
+button{
+background:linear-gradient(135deg,var(--purple),var(--pink));
+border:none;
+color:white;
+padding:10px 20px;
+border-radius:10px;
+font-weight:600;
+cursor:pointer;
+transition:.25s;
+box-shadow:0 0 10px var(--pink);
+}
+
+button:hover{
+transform:scale(1.05);
+box-shadow:
+0 0 10px var(--pink),
+0 0 20px var(--purple),
+0 0 40px var(--cyan);
+}
+
+/* INPUT */
+
+input,select{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:none;
+margin:8px 0;
+background:#0f172a;
+color:white;
+box-shadow:inset 0 0 5px rgba(255,255,255,0.1);
+}
+
+input:focus,select:focus{
+outline:none;
+box-shadow:0 0 10px var(--purple);
+}
+
+/* ADMIN STATS */
+
+#adminStats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:15px;
+}
+
+.stat-item{
+background:linear-gradient(135deg,var(--purple),var(--cyan));
+padding:20px;
+border-radius:14px;
+text-align:center;
+font-weight:700;
+font-size:16px;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* BADGES */
+
+.badge{
+padding:4px 10px;
+border-radius:20px;
+font-size:11px;
+font-weight:700;
+}
+
+.valid{
+background:var(--lime);
+color:black;
+}
+
+.expired{
+background:#ef4444;
+}
+
+.expiring{
+background:var(--orange);
+color:black;
+}
+
+/* CART */
+
+#cart div{
+padding:8px;
+border-bottom:1px solid rgba(255,255,255,0.1);
+display:flex;
+justify-content:space-between;
+}
+
+/* GRID */
+
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.hidden{
+display:none !important;
+}
+
+</style>
+</head>
+<body>
+
+<header>
+    <div style="width: 40px;"></div> <h2>✚ Pro-Pharmacy</h2>
+    <button onclick="toggleTheme()" style="background: rgba(255,255,255,0.2);">🌙</button>
+</header>
+
+<div class="container">
+    <div id="loginPage" class="card" style="max-width: 400px; margin: 50px auto;">
+        <h2 style="text-align: center; color: var(--primary);">Welcome Back</h2>
+        <select id="role">
+            <option value="buyer">Customer / Buyer</option>
+            <option value="admin">Pharmacist Admin</option>
+        </select>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()" style="width: 100%; margin-top: 10px;">Sign In</button>
+        <button onclick="showRegister()" style="width: 100%; margin-top: 10px; background: transparent; color: var(--primary); border: 1px solid var(--primary);">Create Account</button>
+    </div>
+
+    <div id="registerPage" class="card hidden" style="max-width: 400px; margin: 50px auto;">
+        <h2 style="text-align: center;">Join Pro-Pharmacy</h2>
+        <input type="text" id="regUser" placeholder="New Username">
+        <input type="password" id="regPass" placeholder="New Password">
+        <button onclick="register()" style="width: 100%;">Register Now</button>
+        <button onclick="show('loginPage')" style="width: 100%; margin-top: 10px; background: #6b7280;">Go Back</button>
+    </div>
+
+    <div id="adminPage" class="hidden">
+        <div class="card">
+            <h2>Pharmacist Dashboard</h2>
+            <div id="adminStats"></div>
+        </div>
+        <div class="card">
+            <h3>Add New Inventory</h3>
+            <div class="form-grid">
+                <input id="mname" placeholder="Medicine Name">
+                <input id="mprice" type="number" placeholder="Price (₹)">
+                <input id="mqty" type="number" Initial Quantity">
+                <select id="mcat">
+                    <option>Tablet</option>
+                    <option>Syrup</option>
+                    <option>Injection</option>
+                    <option>Device</option>
+                    <option>Supplement</option>
+                </select>
+            </div>
+            <button onclick="addMedicine()" style="margin-top: 10px;">Update Inventory</button>
+        </div>
+        <h3>Inventory List</h3>
+        <div id="adminList"></div>
+        <button onclick="logout()" style="background: #374151;">Logout</button>
+    </div>
+
+    <div id="buyerPage" class="hidden">
+        <div class="card">
+            <h2>Medical Store</h2>
+            <div class="form-grid">
+                <input onkeyup="applyFilters()" id="search" placeholder="Search medicines...">
+                <div style="display: flex; gap: 10px;">
+                    <select onchange="applyFilters()" id="categoryFilter">
+                        <option value="All">All Categories</option>
+                        <option>Tablet</option><option>Syrup</option><option>Injection</option>
+                        <option>Device</option><option>Supplement</option>
+                    </select>
+                    <select onchange="applyFilters()" id="sort">
+                        <option value="none">Sort By</option>
+                        <option value="low">Price: Low to High</option>
+                        <option value="high">Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div id="store" style="text-align: center;"></div>
+        <div class="card">
+            <h3>🛒 Your Cart</h3>
+            <div id="cart"></div>
+            <div style="font-size: 20px; font-weight: 700; margin: 15px 0;">Total: ₹<span id="total">0</span></div>
+            <button onclick="checkout()" style="width: 100%; padding: 15px;">Checkout</button>
+        </div>
+        <div class="card"><h3>Recent Orders</h3><div id="history"></div></div>
+        <button onclick="logout()" style="background: #374151;">Logout</button>
+    </div>
+</div>
+
+<script>
+
+let users = JSON.parse(localStorage.getItem("users")) || [];
+let medicines = JSON.parse(localStorage.getItem("medicines")) || [];
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+let cart = [];
+let totalSales = JSON.parse(localStorage.getItem("sales")) || 0;
+let filteredMedicines = [];
+
+/* =========================
+   DSA STRUCTURES
+========================= */
+
+class Stack{
+constructor(){ this.items=[]; }
+push(x){ this.items.push(x); }
+pop(){ if(this.items.length===0) return null; return this.items.pop(); }
+}
+let cartStack = new Stack();
+
+class Queue{
+constructor(){ this.items=[]; }
+enqueue(x){ this.items.push(x); }
+dequeue(){ if(this.items.length===0) return null; return this.items.shift(); }
+}
+let orderQueue = new Queue();
+
+let medicineMap = new Map();
+
+function buildMedicineMap(){
+medicines.forEach(m=>{
+medicineMap.set(m.name.toLowerCase(),m);
+});
+}
+
+/* =========================
+   RANDOM EXPIRY GENERATOR
+========================= */
+
+function generateRandomExpiry(){
+let d = new Date();
+let months = Math.floor(Math.random()*18)+6;
+d.setMonth(d.getMonth()+months);
+return d.toISOString().split("T")[0];
+}
+
+/* =========================
+   CHECK EXPIRY STATUS
+========================= */
+
+function checkExpiry(date){
+
+let diff = (new Date(date)-new Date())/(1000*60*60*24);
+
+if(diff<0) return "expired";
+if(diff<30) return "expiring";
+
+return "valid";
+
+}
+
+/* =========================
+   INITIAL MEDICINE LOAD
+========================= */
+
+if(medicines.length===0){
+
+const rawList=[
+{name:"Paracetamol",price:20},
+{name:"Ibuprofen",price:35},
+{name:"Azithromycin",price:150},
+{name:"Amoxicillin",price:120},
+{name:"Vitamin C",price:60},
+{name:"Insulin Injection",price:500},
+{name:"Cough Syrup",price:75},
+{name:"ORS Powder",price:25},
+{name:"Dettol Liquid",price:90},
+{name:"Digital Thermometer",price:250}
+];
+
+medicines = rawList.map(item=>({
+...item,
+qty:100,
+category:"Tablet",
+expiry:generateRandomExpiry(),
+img:"https://via.placeholder.com/200x130?text="+item.name
+}));
+
+localStorage.setItem("medicines",JSON.stringify(medicines));
+
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+function login(){
+
+let role=document.getElementById("role").value;
+let user=document.getElementById("username").value;
+let pass=document.getElementById("password").value;
+
+if(role==="admin" && user==="admin" && pass==="123"){
+show("adminPage");
+updateAdmin();
+}
+
+else if(role==="buyer"){
+
+let u=users.find(x=>x.user===user && x.pass===pass);
+
+if(u){
+show("buyerPage");
+filteredMedicines=[...medicines];
+displayStore(filteredMedicines);
+displayHistory();
+buildMedicineMap();
+}
+
+else alert("Invalid credentials");
+
+}
+
+}
+
+/* =========================
+   PAGE CONTROL
+========================= */
+
+function show(id){
+
+["loginPage","adminPage","buyerPage","registerPage"].forEach(x=>
+document.getElementById(x).classList.add("hidden")
+);
+
+document.getElementById(id).classList.remove("hidden");
+
+}
+
+function showRegister(){ show("registerPage"); }
+
+function register(){
+
+let user=document.getElementById("regUser").value;
+let pass=document.getElementById("regPass").value;
+
+if(!user || !pass){
+alert("Enter username and password");
+return;
+}
+
+users.push({user,pass});
+localStorage.setItem("users",JSON.stringify(users));
+
+alert("Registered!");
+show("loginPage");
+
+}
+
+/* =========================
+   ADMIN ADD MEDICINE
+========================= */
+
+function addMedicine(){
+
+let name=document.getElementById("mname").value.trim();
+let price=parseInt(document.getElementById("mprice").value);
+let qty=parseInt(document.getElementById("mqty").value);
+let cat=document.getElementById("mcat").value;
+
+if(!name || !price || !qty){
+alert("Enter valid details");
+return;
+}
+
+let exists=medicines.find(m=>m.name.toLowerCase()===name.toLowerCase());
+
+if(exists){
+alert("Medicine already exists");
+return;
+}
+
+let med={
+name:name,
+price:price,
+qty:qty,
+category:cat,
+expiry:generateRandomExpiry(),
+img:"https://via.placeholder.com/200x130?text="+name
+};
+
+medicines.push(med);
+medicineMap.set(name.toLowerCase(),med);
+
+localStorage.setItem("medicines",JSON.stringify(medicines));
+
+updateAdmin();
+
+}
+
+/* =========================
+   ADMIN DASHBOARD
+========================= */
+
+function updateAdmin(){
+
+let list=document.getElementById("adminList");
+let stats=document.getElementById("adminStats");
+
+list.innerHTML="";
+let low=0;
+let expired=0;
+let totalUnits=0;
+
+medicines.forEach((m,i)=>{
+
+if(m.qty<=5) low++;
+if(checkExpiry(m.expiry)==="expired") expired++;
+
+totalUnits+=m.qty;
+
+list.innerHTML+=`
+<div class="card">
+${m.name} - Stock:${m.qty} - Exp:${m.expiry}
+<button onclick="deleteMed(${i})" style="background:red">Remove</button>
+</div>
+`;
+
+});
+
+stats.innerHTML=`
+<div class="stat-item">Medicines: ${medicines.length}</div>
+<div class="stat-item">Low Stock: ${low}</div>
+<div class="stat-item">Expired: ${expired}</div>
+<div class="stat-item">Total Units: ${totalUnits}</div>
+<div class="stat-item">Sales ₹${totalSales}</div>
+`;
+
+}
+
+function deleteMed(i){
+
+medicines.splice(i,1);
+
+localStorage.setItem("medicines",JSON.stringify(medicines));
+
+updateAdmin();
+
+}
+
+/* =========================
+   FILTER + SORT
+========================= */
+
+function applyFilters(){
+
+let search=document.getElementById("search").value.toLowerCase();
+let cat=document.getElementById("categoryFilter").value;
+let sort=document.getElementById("sort").value;
+
+filteredMedicines=medicines.filter(m=>
+(cat==="All" || m.category===cat) &&
+m.name.toLowerCase().includes(search)
+);
+
+if(sort==="low") filteredMedicines.sort((a,b)=>a.price-b.price);
+if(sort==="high") filteredMedicines.sort((a,b)=>b.price-a.price);
+
+displayStore(filteredMedicines);
+
+}
+
+/* =========================
+   STORE DISPLAY
+========================= */
+
+function displayStore(list){
+
+let store=document.getElementById("store");
+store.innerHTML="";
+
+list.forEach((m,i)=>{
+
+let expiryStatus=checkExpiry(m.expiry);
+let stockText=m.qty;
+
+if(m.qty<=5) stockText="<span style='color:red'>Low Stock</span>";
+
+if(m.qty===0){
+store.innerHTML+=`
+<div class="card medicine">
+<img src="${m.img}" width="200">
+<b>${m.name}</b>
+<br>
+<span style="color:red">Out of Stock</span>
+</div>
+`;
+return;
+}
+
+store.innerHTML+=`
+<div class="card medicine">
+
+<img src="${m.img}" width="200">
+
+<br>
+
+<b>${m.name}</b>
+
+<br>
+
+₹${m.price}
+
+<br>
+
+Stock:${stockText}
+
+<br>
+
+Expiry:${m.expiry}
+
+<br>
+
+<input type="number" id="q${i}" value="1" min="1" style="width:60px">
+
+<button onclick="addCart(${i})">Add</button>
+
+</div>
+`;
+
+});
+
+}
+
+/* =========================
+   CART FUNCTIONS
+========================= */
+
+function addCart(i){
+
+let m=filteredMedicines[i];
+let qty=parseInt(document.getElementById("q"+i).value);
+
+if(checkExpiry(m.expiry)==="expired"){
+alert("Medicine expired");
+return;
+}
+
+if(qty>m.qty){
+alert("Not enough stock");
+return;
+}
+
+m.qty-=qty;
+
+let item={...m,qty};
+
+cart.push(item);
+cartStack.push(item);
+
+localStorage.setItem("medicines",JSON.stringify(medicines));
+
+updateCart();
+applyFilters();
+
+}
+
+function clearCart(){
+
+cart.forEach(item=>{
+let med=medicines.find(m=>m.name===item.name);
+if(med) med.qty+=item.qty;
+});
+
+cart=[];
+updateCart();
+applyFilters();
+
+}
+
+function undoCart(){
+
+let item=cartStack.pop();
+
+if(!item){
+alert("Nothing to undo");
+return;
+}
+
+cart.pop();
+
+let med=medicines.find(m=>m.name===item.name);
+
+if(med) med.qty+=item.qty;
+
+updateCart();
+applyFilters();
+
+}
+
+function updateCart(){
+
+let div=document.getElementById("cart");
+let total=0;
+
+div.innerHTML="";
+
+cart.forEach((c,i)=>{
+
+total+=c.price*c.qty;
+
+div.innerHTML+=`
+<div>
+${c.name} x${c.qty}
+<button onclick="removeCart(${i})">X</button>
+</div>
+`;
+
+});
+
+document.getElementById("total").innerText=total;
+
+}
+
+function removeCart(i){
+
+let item=cart[i];
+
+let med=medicines.find(m=>m.name===item.name);
+
+med.qty+=item.qty;
+
+cart.splice(i,1);
+
+updateCart();
+applyFilters();
+
+}
+
+/* =========================
+   CHECKOUT
+========================= */
+
+function checkout(){
+
+if(cart.length===0) return;
+
+let amount=parseInt(document.getElementById("total").innerText);
+
+let order={
+date:new Date().toLocaleString(),
+amount:amount,
+items:cart
+};
+
+orderQueue.enqueue(order);
+
+orders.push(order);
+
+totalSales+=amount;
+
+localStorage.setItem("sales",totalSales);
+localStorage.setItem("orders",JSON.stringify(orders));
+
+alert("Order successful!");
+
+cart=[];
+updateCart();
+displayHistory();
+
+}
+
+/* =========================
+   ORDER HISTORY
+========================= */
+
+function displayHistory(){
+
+let h=document.getElementById("history");
+h.innerHTML="";
+
+orders.slice().reverse().forEach(o=>{
+h.innerHTML+=`<div>📅 ${o.date} - ₹${o.amount}</div>`;
+});
+
+}
+
+function logout(){ location.reload(); }
+
+function toggleTheme(){
+document.body.classList.toggle("dark");
+}
+
+</script>
+</body>
+</html>
